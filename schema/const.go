@@ -1,3 +1,7 @@
+// Copyright (c) 2019 TerserGo
+// 2019-05-20 10:42
+// schema/const.go
+
 package schema
 
 import (
@@ -21,33 +25,41 @@ var (
 		"varchar":    "string",
 		"json":       "string",
 		"text":       "string",
+		"tinytext":   "string",
 		"mediumtext": "string",
 		"longtext":   "string",
-		"time":       "time.time",
-		"timestamp":  "time.time",
-		"datetime":   "time.time",
-		"tinyint":    "int",
-		"smallint":   "int",
+		"date":       "time.Time",
+		"year":       "time.Time",
+		"time":       "time.Time",
+		"timestamp":  "time.Time",
+		"datetime":   "time.Time",
+		"tinyint":    "int8",
+		"smallint":   "int16",
+		"mediumint":  "int32",
 		"int":        "int",
-		"bigint":     "int",
-		"float":      "float",
-		"double":     "float",
-		"decimal":    "float",
-		"set":        "",
-		"enum":       "",
-		"blob":       "",
-		"mediumblob": "",
-		"longblob":   "",
+		"bigint":     "int64",
+		"float":      "float32",
+		"double":     "float64",
+		"decimal":    "float64",
+		"enum":       "string",
+		"blob":       "[]byte",
+		"tinyblob":   "[]byte",
+		"mediumblob": "[]byte",
+		"longblob":   "[]byte",
 	}
 )
 
 func toString(v interface{}) string {
-	s, ok := v.(string)
-	if ok {
-		return s
+	if v == nil {
+		return ""
 	}
 
-	return fmt.Sprint(v)
+	text, ok := v.(string)
+	if ok {
+		return text
+	}
+
+	return fmt.Sprintf("%s", v)
 }
 
 func equalToString(v interface{}, s string) bool {
@@ -60,6 +72,11 @@ func equalToString(v interface{}, s string) bool {
 }
 
 func toInt(v interface{}) (num int, err error) {
+	i, ok := v.(int)
+	if ok {
+		return i, nil
+	}
+
 	s := toString(v)
 	if len(s) > 0 {
 		i, err := strconv.Atoi(s)
@@ -81,14 +98,14 @@ func GetFriendlyName(original string) (friendlyName string) {
 	for _, split := range splitChars {
 		if strings.Index(name, split) >= 0 {
 			splitNames := strings.Split(original, split)
-			return GetHumpName(splitNames)
+			return GetHumpName(splitNames...)
 		}
 	}
 
-	return GetHumpName([]string{original})
+	return GetHumpName(original)
 }
 
-func GetHumpName(names []string) (humpName string) {
+func GetHumpName(names ...string) (humpName string) {
 	for _, name := range names {
 		length := len(name)
 
@@ -118,7 +135,7 @@ func GetTableFileName(original string) (name string) {
 
 	for _, prefix := range tablePrefixes {
 		if strings.Index(name, prefix) == 0 {
-			startIndex := len(prefix) - 1
+			startIndex := len(prefix)
 			return name[startIndex:]
 		}
 	}

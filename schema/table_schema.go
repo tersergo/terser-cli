@@ -1,61 +1,24 @@
+// Copyright (c) 2019 TerserGo
+// 2019-05-20 10:42
+// schema/table_schema.go
+
 package schema
 
-import (
-	"strings"
-)
-
 type TableSchema struct {
-	DBName     string
-	Name       string
-	Comment    string
-	EngineName string
-	CreateTime string
-	UpdateTime string
-
-	FriendlyName string
-	FileName     string
-	IsIncrement  bool
-	PrimaryKey   string
-
-	ColumnList []ColumnSchema
-}
-
-func NewTableSchema(list map[string]interface{}) (schema TableSchema) {
-	if len(list) == 0 {
-		return schema
-	}
-
-	/**
-	UPDATE `` SET `TABLE_CATALOG` = 'def', `TABLE_SCHEMA` = 'open_campus', `TABLE_NAME` = 't_sys_menu',
-		`TABLE_TYPE` = 'BASE TABLE', `ENGINE` = 'InnoDB', `VERSION` = 10, `ROW_FORMAT` = 'Dynamic',
-		`TABLE_ROWS` = 0, `AVG_ROW_LENGTH` = 0, `DATA_LENGTH` = 16384, `MAX_DATA_LENGTH` = 0, `INDEX_LENGTH` = 0,
-		`DATA_FREE` = 0, `AUTO_INCREMENT` = 100, `CREATE_TIME` = '2019-05-19 23:28:52', `UPDATE_TIME` = NULL,
-		`CHECK_TIME` = NULL, `TABLE_COLLATION` = 'utf8mb4_general_ci', `CHECKSUM` = NULL, `CREATE_OPTIONS` = '',
-		`TABLE_COMMENT` = '系统菜单表'
-	*/
-	schema = TableSchema{}
-
-	for field, value := range list {
-		switch strings.ToUpper(field) {
-		case "TABLE_SCHEMA":
-			schema.DBName = toString(value)
-		case "TABLE_NAME":
-			schema.Name = toString(value)
-			schema.FileName = GetTableFileName(schema.Name)
-			schema.FriendlyName = GetFriendlyName(schema.FileName)
-		case "TABLE_COMMENT":
-			schema.Comment = toString(value)
-		case "ENGINE":
-			schema.EngineName = toString(value)
-			schema.SetIsIncrement(value)
-		case "CREATE_TIME":
-			schema.CreateTime = toString(value)
-		case "UPDATE_TIME":
-			schema.UpdateTime = toString(value)
-		}
-	}
-
-	return schema
+	DBName         string // database name
+	Name           string // table name
+	Comment        string // table comment
+	EngineName     string // table engine
+	ModelName      string // table model name
+	FileName       string // table file name
+	IsIncrement    bool   // table is auto increment
+	HasPrimaryKey  bool   // table primary key field
+	HasNullable    bool
+	LogicDeleteKey string
+	ColumnList     []ColumnSchema // table columns
+	primaryKeyIds  []int
+	CreateTime     string
+	ShortName      string
 }
 
 func (t *TableSchema) SetIsIncrement(v interface{}) {
@@ -65,4 +28,32 @@ func (t *TableSchema) SetIsIncrement(v interface{}) {
 	} else {
 		t.IsIncrement = false
 	}
+}
+
+func (t *TableSchema) AppendColumn(column ColumnSchema) {
+	if column.IsPrimaryKey {
+		t.HasPrimaryKey = true
+		t.primaryKeyIds = append(t.primaryKeyIds, len(t.ColumnList))
+	}
+
+	if !t.HasNullable && column.IsNullable {
+		t.HasNullable = true
+	}
+
+	t.ColumnList = append(t.ColumnList, column)
+}
+
+func (t *TableSchema) GetPrimaryKeys() (columns []ColumnSchema) {
+	if len(t.primaryKeyIds) > 0 {
+		for _, index := range t.primaryKeyIds {
+			columns = append(columns, t.ColumnList[index])
+		}
+	}
+	return columns
+}
+
+func (t *TableSchema) InitName() {
+	t.FileName = GetTableFileName(t.Name)
+	t.ModelName = GetFriendlyName(t.FileName)
+	t.ShortName = t.FileName[0:1]
 }
