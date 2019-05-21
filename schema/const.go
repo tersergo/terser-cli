@@ -16,8 +16,9 @@ var (
 	tablePrefixes = [...]string{"t_"}
 
 	friendlyNameMaps = map[string]string{
-		"db": "DB",
-		"id": "ID",
+		"db":   "DB",
+		"id":   "ID",
+		"uuid": "UUID",
 	}
 
 	dataTypeMaps = map[string]string{
@@ -33,9 +34,9 @@ var (
 		"time":       "time.Time",
 		"timestamp":  "time.Time",
 		"datetime":   "time.Time",
-		"tinyint":    "int8",
-		"smallint":   "int16",
-		"mediumint":  "int32",
+		"tinyint":    "int",
+		"smallint":   "int",
+		"mediumint":  "int",
 		"int":        "int",
 		"bigint":     "int64",
 		"float":      "float32",

@@ -92,7 +92,7 @@ func (query *Query) fetchTableSchema() (tableList []*TableSchema, err error) {
 		}
 
 		table.SetIsIncrement(tbInc)
-		table.InitName()
+		table.Init()
 
 		tableList = append(tableList, table)
 	}
@@ -139,13 +139,13 @@ func (query *Query) fetchColumnSchema() (columnList []ColumnSchema, err error) {
 			DataType:     colDataType,
 		}
 
-		column.VarName = GetFriendlyName(colName)
+		column.PropertyName = GetFriendlyName(colName)
 		column.SetIsPrimaryKey(colKey)
 		column.SetIsNullable(colNullable)
 		column.SetDataTypeLength(charLength)
 		column.SetDataTypeLength(numLength)
 		column.SetDataTypeScale(scaleLength)
-		column.InitGoDataType()
+		column.Init()
 
 		columnList = append(columnList, column)
 	}

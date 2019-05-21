@@ -8,8 +8,9 @@ import "strings"
 
 type ColumnSchema struct {
 	TableName      string
-	Name           string
-	VarName        string
+	Name           string // 表的字段名
+	PropertyName   string // struct属性名
+	VarName        string // func变量名
 	Comment        string
 	ColumnType     string // 列具体数据类型 varchar(64), int(11)
 	DataType       string // 数据类型(无精度) varchar, int
@@ -20,7 +21,6 @@ type ColumnSchema struct {
 	IsPrimaryKey   bool
 	IsEnum         bool
 	GoDataType     string // Golang对应的基础类型
-	LabelTag       string
 }
 
 func (c *ColumnSchema) SetIsPrimaryKey(v interface{}) {
@@ -45,11 +45,19 @@ func (c *ColumnSchema) SetDataTypeScale(v interface{}) {
 	}
 }
 
-func (c *ColumnSchema) InitGoDataType() {
+func (c *ColumnSchema) Init() {
 	if len(c.GoDataType) > 0 {
 		return
 	}
-	c.LabelTag = "`"
+
+	if len(c.PropertyName) > 0 {
+		_, exist := friendlyNameMaps[c.Name]
+		if !exist {
+			c.VarName = strings.ToLower(c.PropertyName[0:1]) + c.PropertyName[1:]
+		} else {
+			c.VarName = strings.ToLower(c.Name)
+		}
+	}
 
 	baseType, exists := dataTypeMaps[c.DataType]
 

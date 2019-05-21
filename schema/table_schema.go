@@ -4,21 +4,27 @@
 
 package schema
 
+import "strings"
+
 type TableSchema struct {
-	DBName         string // database name
-	Name           string // table name
-	Comment        string // table comment
-	EngineName     string // table engine
-	ModelName      string // table model name
-	FileName       string // table file name
-	IsIncrement    bool   // table is auto increment
-	HasPrimaryKey  bool   // table primary key field
-	HasNullable    bool
-	LogicDeleteKey string
-	ColumnList     []ColumnSchema // table columns
-	primaryKeyIds  []int
-	CreateTime     string
-	ShortName      string
+	DBName          string // database name
+	Name            string // table name
+	StructName      string // table model name
+	VarName         string
+	Comment         string // table comment
+	EngineName      string // table engine
+	FileName        string // table file name
+	IsIncrement     bool   // table is auto increment
+	HasNullable     bool
+	LogicDeleteKey  string
+	CreateUserKey   string
+	UpdateUserKey   string
+	ColumnList      []ColumnSchema // table columns
+	PrimaryKeyCount int            // table primary key field
+	PrimaryKeys     []ColumnSchema
+	GenerateTime    string
+	LabelTag        string
+	LabelDot        string
 }
 
 func (t *TableSchema) SetIsIncrement(v interface{}) {
@@ -32,28 +38,34 @@ func (t *TableSchema) SetIsIncrement(v interface{}) {
 
 func (t *TableSchema) AppendColumn(column ColumnSchema) {
 	if column.IsPrimaryKey {
-		t.HasPrimaryKey = true
-		t.primaryKeyIds = append(t.primaryKeyIds, len(t.ColumnList))
+		t.PrimaryKeys = append(t.PrimaryKeys, column)
+		t.PrimaryKeyCount = len(t.PrimaryKeys)
 	}
 
 	if !t.HasNullable && column.IsNullable {
 		t.HasNullable = true
 	}
 
+	switch strings.ToLower(column.Name) {
+	case "is_deleted":
+		t.LogicDeleteKey = column.PropertyName
+	case "created_on":
+		t.CreateUserKey = column.PropertyName
+	case "modified_on":
+		t.UpdateUserKey = column.PropertyName
+	}
+
 	t.ColumnList = append(t.ColumnList, column)
 }
 
-func (t *TableSchema) GetPrimaryKeys() (columns []ColumnSchema) {
-	if len(t.primaryKeyIds) > 0 {
-		for _, index := range t.primaryKeyIds {
-			columns = append(columns, t.ColumnList[index])
-		}
-	}
-	return columns
-}
+func (t *TableSchema) Init() {
+	t.LabelTag = "`"
+	t.LabelDot = "."
+	t.LogicDeleteKey = ""
+	t.CreateUserKey = ""
+	t.UpdateUserKey = ""
 
-func (t *TableSchema) InitName() {
 	t.FileName = GetTableFileName(t.Name)
-	t.ModelName = GetFriendlyName(t.FileName)
-	t.ShortName = t.FileName[0:1]
+	t.StructName = GetFriendlyName(t.FileName)
+	t.VarName = t.FileName[0:1]
 }

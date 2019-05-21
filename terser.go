@@ -27,14 +27,20 @@ func main() {
 		return
 	}
 
-	modelTpl := template.Must(template.New("model").Parse(tpl.ModelTemplate))
+	generateDBConfig(query)
 
-	createTime := time.Now().Format("2006/01/02 15:04:05")
+	newTemp, err := template.New("model").Parse(tpl.ModelTemplate)
+	if err != nil {
+		fmt.Println("template error: ", err.Error())
+	}
+	modelTpl := template.Must(newTemp, err)
+
+	generateTime := time.Now().Format("2006/01/02 15:04:05")
 
 	for tableName, table := range tableList {
-		table.CreateTime = createTime
+		table.GenerateTime = generateTime
 		tpl, _ := modelTpl.Clone()
-		fmt.Println(tableName, "\t\t=>\t", table.ModelName)
+		fmt.Println(tableName, "\t\t=>\t", table.StructName)
 
 		var stream bytes.Buffer
 		err = tpl.Execute(&stream, table)
@@ -48,13 +54,31 @@ func main() {
 }
 
 func writeFile(dir, file string, stream bytes.Buffer) {
-	os.Mkdir(dir, os.ModePerm)
+	os.Mkdir("../"+dir, os.ModePerm)
 
-	filePath := filepath.Join(dir, file+".go")
+	filePath := filepath.Join("../", dir, file+".go")
 	data, err := format.Source(stream.Bytes())
 	if err != nil {
 		fmt.Println("stream error: " + err.Error())
 		return
 	}
 	ioutil.WriteFile(filePath, data, os.ModePerm)
+}
+
+func generateDBConfig(query *schema.Query) {
+
+	dbTemp, err := template.New("db_config").Parse(tpl.DBConfigTemplate)
+	if err != nil {
+		fmt.Println("template error: ", err.Error())
+	}
+	tpl := template.Must(dbTemp, err)
+
+	var stream bytes.Buffer
+	err = tpl.Execute(&stream, query)
+	if err != nil {
+		fmt.Println("db_config template error: ", err.Error())
+	}
+
+	writeFile("model", "db_config", stream)
+
 }
