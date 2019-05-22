@@ -12,17 +12,17 @@ import (
 )
 
 type Query struct {
-	DriverName string
 	DBName     string
 	DSN        string
+	DriverName string
 	db         *sql.DB
 }
 
-func NewDBQuery(dbName, dsn string) (dbQuery *Query) {
+func NewQuery(dbName, dsn, dbDriver string) (dbQuery *Query) {
 	return &Query{
-		DriverName: "mysql",
 		DBName:     dbName,
 		DSN:        dsn,
+		DriverName: dbDriver,
 	}
 }
 

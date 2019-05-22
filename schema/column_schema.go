@@ -17,10 +17,12 @@ type ColumnSchema struct {
 	DataTypeLength int    // 数据精度
 	DataTypeScale  int    // 数据小数精度
 	DefaultValue   string
+	IsDateTime     bool
 	IsNullable     bool
 	IsPrimaryKey   bool
 	IsEnum         bool
 	GoDataType     string // Golang对应的基础类型
+	Index          int
 }
 
 func (c *ColumnSchema) SetIsPrimaryKey(v interface{}) {
@@ -71,15 +73,16 @@ func (c *ColumnSchema) Init() {
 	switch strings.ToLower(c.DataType) {
 	case "int":
 		if strings.Index(c.ColumnType, "unsigned") > 0 {
+			c.ColumnType = strings.Replace(c.ColumnType, " unsigned", "", 1)
 			c.GoDataType = "u" + baseType
 		}
 	case "enum":
-		c.initEnumType(c.ColumnType)
+		//c.initEnumType(c.ColumnType)
 	default:
 	}
 
 }
 
-func (c *ColumnSchema) initEnumType(enumType string) {
-
-}
+//func (c *ColumnSchema) initEnumType(enumType string) {
+//
+//}

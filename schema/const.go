@@ -18,6 +18,7 @@ var (
 	friendlyNameMaps = map[string]string{
 		"db":   "DB",
 		"id":   "ID",
+		"pk":   "PK",
 		"uuid": "UUID",
 	}
 
@@ -37,17 +38,23 @@ var (
 		"tinyint":    "int",
 		"smallint":   "int",
 		"mediumint":  "int",
-		"int":        "int",
+		"int":        "int32",
 		"bigint":     "int64",
 		"float":      "float32",
 		"double":     "float64",
 		"decimal":    "float64",
 		"enum":       "string",
+		"bool":       "bool",
+		"set":        "string",
 		"blob":       "[]byte",
 		"tinyblob":   "[]byte",
 		"mediumblob": "[]byte",
 		"longblob":   "[]byte",
+		"binary":     "[]byte",
+		"varbinary":  "[]byte",
 	}
+
+	nullTypeMaps = map[string]string{}
 )
 
 func toString(v interface{}) string {

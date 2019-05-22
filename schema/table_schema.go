@@ -7,24 +7,25 @@ package schema
 import "strings"
 
 type TableSchema struct {
-	DBName          string // database name
-	Name            string // table name
-	StructName      string // table model name
-	VarName         string
-	Comment         string // table comment
-	EngineName      string // table engine
-	FileName        string // table file name
-	IsIncrement     bool   // table is auto increment
-	HasNullable     bool
-	LogicDeleteKey  string
-	CreateUserKey   string
-	UpdateUserKey   string
-	ColumnList      []ColumnSchema // table columns
-	PrimaryKeyCount int            // table primary key field
-	PrimaryKeys     []ColumnSchema
-	GenerateTime    string
-	LabelTag        string
-	LabelDot        string
+	DBName         string // database name
+	Name           string // table name
+	StructName     string // table model name
+	VarName        string
+	Comment        string         // table comment
+	EngineName     string         // table engine
+	FileName       string         // table file name
+	ColumnList     []ColumnSchema // table columns
+	PrimaryKeys    []ColumnSchema
+	HasPrimaryKey  bool // table primary key field
+	IsIncrement    bool // table is auto increment
+	HasNullable    bool
+	HasDateTime    bool
+	LogicDeleteKey string
+	CreateUserKey  string
+	UpdateUserKey  string
+	GenerateTime   string
+	LabelTag       string
+	LabelDot       string
 }
 
 func (t *TableSchema) SetIsIncrement(v interface{}) {
@@ -38,8 +39,9 @@ func (t *TableSchema) SetIsIncrement(v interface{}) {
 
 func (t *TableSchema) AppendColumn(column ColumnSchema) {
 	if column.IsPrimaryKey {
+		t.HasPrimaryKey = true
+		column.Index = len(t.PrimaryKeys)
 		t.PrimaryKeys = append(t.PrimaryKeys, column)
-		t.PrimaryKeyCount = len(t.PrimaryKeys)
 	}
 
 	if !t.HasNullable && column.IsNullable {
