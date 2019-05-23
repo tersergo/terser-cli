@@ -9,8 +9,8 @@ import (
 	"text/template"
 	"time"
 
-	"github.com/tersergo/terser-cli/schema"
-	tpl "github.com/tersergo/terser-cli/template"
+	"github.com/tersergo/cli/schema"
+	tpl "github.com/tersergo/cli/template"
 )
 
 var (
@@ -33,7 +33,7 @@ func init() {
 }
 
 func main() {
-	prompt := `terser -name=test -dsn="root:root@tcp(localhost:3306)/test?charset=utf8&parseTime=True&loc=Local" -driver=mysql -app=new-app`
+	prompt := `terser -name=test -dsn="root:root@tcp(localhost:3306)/test?charset=utf8&parseTime=True&loc=Local" -driver=mysql -app=../new-app`
 	if len(os.Args) == 1 {
 		fmt.Println(prompt)
 		os.Exit(1)

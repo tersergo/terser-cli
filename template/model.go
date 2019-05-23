@@ -35,7 +35,7 @@ func ({{.VarName}} *{{.StructName}}) TableName() string {
 
 func ({{.VarName}} *{{.StructName}}) BeforeCreate(scope *gorm.Scope) error {
 	// 执行create时为某些字段赋初值
-	//scope.Set("LoginTime", time.Unix(1, 0))
+	//scope.Set("字段名", 默认值)
 	return nil
 }
 

@@ -1,3 +1,3 @@
-module github.com/tersergo/terser-cli
+module github.com/tersergo/cli
 
 go 1.12
