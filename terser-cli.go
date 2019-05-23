@@ -9,8 +9,8 @@ import (
 	"text/template"
 	"time"
 
-	"github.com/tersergo/cli/schema"
-	tpl "github.com/tersergo/cli/template"
+	"github.com/tersergo/terser-cli/schema"
+	tpl "github.com/tersergo/terser-cli/template"
 )
 
 var (
