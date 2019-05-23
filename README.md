@@ -29,7 +29,7 @@ graph LR;
 
 1. 下载go源码
 	
-> go get -u github.com/tersergo/cli
+> go get -u github.com/tersergo/terser-cli
 
 2. 执行生成命令
 
