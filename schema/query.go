@@ -145,6 +145,7 @@ func (query *Query) fetchColumnSchema() (columnList []ColumnSchema, err error) {
 		column.SetDataTypeLength(charLength)
 		column.SetDataTypeLength(numLength)
 		column.SetDataTypeScale(scaleLength)
+
 		column.Init()
 
 		columnList = append(columnList, column)

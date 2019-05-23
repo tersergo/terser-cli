@@ -11,6 +11,8 @@ import (
 )
 
 var (
+	IgnoreUnsignedType = false
+
 	splitChars = [...]string{"_", "-"}
 
 	tablePrefixes = [...]string{"t_"}
@@ -20,6 +22,7 @@ var (
 		"id":   "ID",
 		"pk":   "PK",
 		"uuid": "UUID",
+		"ip":   "IP",
 	}
 
 	dataTypeMaps = map[string]string{
@@ -35,10 +38,10 @@ var (
 		"time":       "time.Time",
 		"timestamp":  "time.Time",
 		"datetime":   "time.Time",
-		"tinyint":    "int",
-		"smallint":   "int",
-		"mediumint":  "int",
-		"int":        "int32",
+		"tinyint":    "int8",
+		"smallint":   "int16",
+		"mediumint":  "int16",
+		"int":        "int",
 		"bigint":     "int64",
 		"float":      "float32",
 		"double":     "float64",

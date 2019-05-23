@@ -20,6 +20,7 @@ type TableSchema struct {
 	IsIncrement    bool // table is auto increment
 	HasNullable    bool
 	HasDateTime    bool
+	HasEnum        bool
 	LogicDeleteKey string
 	CreateUserKey  string
 	UpdateUserKey  string
@@ -47,13 +48,22 @@ func (t *TableSchema) AppendColumn(column ColumnSchema) {
 	if !t.HasNullable && column.IsNullable {
 		t.HasNullable = true
 	}
+	if !t.HasDateTime && column.IsDateTime {
+		t.HasDateTime = true
+	}
+	if !t.HasNullable && column.IsNullable {
+		t.HasNullable = true
+	}
+	if !t.HasEnum && column.IsEnum {
+		t.HasEnum = true
+	}
 
 	switch strings.ToLower(column.Name) {
 	case "is_deleted":
 		t.LogicDeleteKey = column.PropertyName
 	case "created_on":
 		t.CreateUserKey = column.PropertyName
-	case "modified_on":
+	case "updated_on":
 		t.UpdateUserKey = column.PropertyName
 	}
 

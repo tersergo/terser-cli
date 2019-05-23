@@ -4,7 +4,9 @@
 
 package schema
 
-import "strings"
+import (
+	"strings"
+)
 
 type ColumnSchema struct {
 	TableName      string
@@ -17,10 +19,12 @@ type ColumnSchema struct {
 	DataTypeLength int    // 数据精度
 	DataTypeScale  int    // 数据小数精度
 	DefaultValue   string
+	IsNumeral      bool
 	IsDateTime     bool
 	IsNullable     bool
 	IsPrimaryKey   bool
 	IsEnum         bool
+	IsJson         bool
 	GoDataType     string // Golang对应的基础类型
 	Index          int
 }
@@ -61,24 +65,51 @@ func (c *ColumnSchema) Init() {
 		}
 	}
 
-	baseType, exists := dataTypeMaps[c.DataType]
+	goBaseType, exists := dataTypeMaps[c.DataType]
 
 	if !exists {
 		c.GoDataType = c.DataType
 		return
 	}
-
-	c.GoDataType = baseType
+	c.GoDataType = goBaseType
 
 	switch strings.ToLower(c.DataType) {
-	case "int":
-		if strings.Index(c.ColumnType, "unsigned") > 0 {
+	case "tinyint", "smallint", "mediumint", "int", "bigint":
+		c.IsNumeral = true
+		if c.IsNullable {
+			c.GoDataType = "null.Int"
+		} else if strings.Index(c.ColumnType, "unsigned") > 0 {
 			c.ColumnType = strings.Replace(c.ColumnType, " unsigned", "", 1)
-			c.GoDataType = "u" + baseType
+			if !IgnoreUnsignedType {
+				c.GoDataType = "u" + goBaseType
+			}
+		}
+	case "date", "year", "time", "timestamp", "datetime":
+		c.IsDateTime = true
+		if strings.Index(c.DefaultValue, "CURRENT_TIMESTAMP") >= 0 {
+			c.DefaultValue = ""
+		}
+		if c.IsNullable {
+			c.GoDataType = "null.Time"
+		}
+	case "float", "double", "decimal":
+		c.IsNumeral = true
+		if c.IsNullable {
+			c.GoDataType = "null.Float"
+		}
+	case "bool":
+		c.IsNumeral = true
+		if c.IsNullable {
+			c.GoDataType = "null.Bool"
 		}
 	case "enum":
+		c.IsEnum = true
 		//c.initEnumType(c.ColumnType)
-	default:
+	case "char", "varchar", "text", "json", "tinytext", "mediumtext", "longtext":
+		c.IsJson = strings.ToLower(c.DataType) == "json"
+		if c.IsNullable {
+			c.GoDataType = "null.String"
+		}
 	}
 
 }

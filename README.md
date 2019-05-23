@@ -12,6 +12,8 @@ graph LR;
     model --> gorm(gorm CRUD)
 ```
 
+![功能图](./docs/func.png)
+
 ## 功能说明
 
 
@@ -27,17 +29,21 @@ graph LR;
 
 1. 下载go源码
 	
-> go get -u github.com/tersergo/terser-cli
+> go get -u github.com/tersergo/cli
 
 2. 执行生成命令
 
 ```sh
-terser terser -name=dbName -dsn="user:pass@tcp(localhost:3306)/test?parseTime=true" -driver=mysql -app=new-app
+# 查看命令参数
+terser-cli -help
+# 执行枉顾test库
+terser-cli -name=test -dsn="root:root@tcp(localhost:3306)/test?charset=utf8&parseTime=True&loc=Local" -driver=mysql -app=new-app
 ```
 - -name: 数据库名称
 - -dsn: 数据源地址
-- -driver 数据库驱动名(MySQL, SQLite, MariaDB)
+- -driver 数据库驱动名(MySQL, SQLite3, Postgres, MSSQL)
 - -app: 应用或项目名称
+- -unsigned: 是否支持无符号(uint)类型(默认1支持,0为忽略)
 
 ### 在项目中使用生成代码
 
