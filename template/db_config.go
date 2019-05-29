@@ -23,6 +23,10 @@ type DBConfig struct {
 
 var defaultDB *gorm.DB
 
+func SetDefaultConfig(dc *DBConfig) {
+	defaultConfig = dc
+}
+
 func GetDefaultDB() (db *gorm.DB) {
 	if defaultDB == nil {
 		config := GetDefaultConfig()
