@@ -19,6 +19,7 @@ var (
 	appName      string
 	dbDriver     string
 	unsigned     string
+	isInt32      string
 	generateTime string
 )
 
@@ -28,6 +29,7 @@ func init() {
 	flag.StringVar(&dsn, "dsn", "root:root@tcp(localhost:3306)/test?charset=utf8&parseTime=True&loc=Local", "database source name")
 	flag.StringVar(&appName, "app", "new-app", "app dir name")
 	flag.StringVar(&dbDriver, "driver", "mysql", "database driver name: MySQL, SQLite3, Postgres, MSSQL")
+	//flag.StringVar(&isInt32, "int32", "0", "default int=int32")
 	flag.StringVar(&unsigned, "unsigned", "1", "support unsigned type(0=ignore): uint, uint8, uint16, uint32, uint64")
 	flag.Parse()
 }

@@ -12,6 +12,7 @@ import (
 
 var (
 	IgnoreUnsignedType = false
+	IsGRPCModel        = false
 
 	splitChars = [...]string{"_", "-"}
 
@@ -38,6 +39,10 @@ var (
 		"time":       "time.Time",
 		"timestamp":  "time.Time",
 		"datetime":   "time.Time",
+		//"tinyint":    "int32",
+		//"smallint":   "int32",
+		//"mediumint":  "int32",
+		//"int":        "int32",
 		"tinyint":    "int8",
 		"smallint":   "int16",
 		"mediumint":  "int16",
@@ -75,33 +80,29 @@ func toString(v interface{}) string {
 
 func equalToString(v interface{}, s string) bool {
 	vs := toString(v)
-	if len(vs) == 0 {
-		return false
-	}
 
 	return vs == s
 }
 
-func toInt(v interface{}) (num int, err error) {
+func toInt(v interface{}, defaultReturn int) (num int) {
 	i, ok := v.(int)
 	if ok {
-		return i, nil
+		return i
 	}
 
 	s := toString(v)
-	if len(s) > 0 {
+	if s != "" {
 		i, err := strconv.Atoi(s)
-		if err == nil && i > 0 {
-			num = i
+		if err == nil {
+			return i
 		}
-	} else {
-		err = fmt.Errorf("values is null")
 	}
-	return num, err
+
+	return defaultReturn
 }
 
 func GetFriendlyName(original string) (friendlyName string) {
-	if len(original) == 0 {
+	if original == "" {
 		return original
 	}
 	name := strings.ToLower(original)
@@ -118,13 +119,11 @@ func GetFriendlyName(original string) (friendlyName string) {
 
 func GetHumpName(names ...string) (humpName string) {
 	for _, name := range names {
-		length := len(name)
-
-		if length == 0 {
+		if name == "" {
 			continue
 		}
 
-		if length == 1 {
+		if len(name) == 1 {
 			humpName += strings.ToUpper(name)
 			continue
 		}

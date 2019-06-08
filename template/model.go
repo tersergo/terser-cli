@@ -7,17 +7,16 @@ package model
 import (
 	"github.com/jinzhu/gorm"
 {{if .HasDateTime}}	"time"{{end}}
-{{if .HasNullable}}	"github.com/guregu/null"
-{{end}})
+)
 
 // {{.StructName}} struct {{.Comment}}
 type {{.StructName}} struct { 
-{{range .ColumnList}}	{{.PropertyName}}	{{.GoDataType}}		{{$.LabelTag}}gorm:"column:{{.Name}};type:{{.ColumnType}};{{if .DefaultValue}}default:{{if .IsNumeral}}{{.DefaultValue}}{{else}}'{{.DefaultValue}}'{{end}};{{end}}{{if .IsPrimaryKey}}primary_key;{{end}}" json:"{{.Name}}"{{$.LabelTag}}	// {{.Comment}}{{if .DefaultValue}} (默认{{.DefaultValue}}){{end}}
+{{range .ColumnList}}	{{.PropertyName}}	{{if .IsNullable}}*{{end}}{{.GoDataType}}		{{$.LabelTag}}gorm:"column:{{.Name}};type:{{.ColumnType}};{{if .DefaultValue}}default:{{if .IsNumeral}}{{.DefaultValue}}{{else}}'{{.DefaultValue}}'{{end}};{{end}}{{if .IsPrimaryKey}}primary_key;{{end}}" json:"{{.Name}}"{{$.LabelTag}}	// {{.Comment}}{{if .IsNullable}} [null type]{{end}}{{if .DefaultValue}} [default: {{.DefaultValue}}]{{end}}
 {{end}}}
 
 //  {{.StructName}} 表字段名常量
 const (
-	{{.StructName}}_TableName  = "{{.Name}}" // 表名: {.Comment}}
+	{{.StructName}}_TableName  = "{{.Name}}" // 表名: {{.Comment}}
 {{range  .ColumnList}}	{{$.StructName}}_{{.PropertyName}} = "{{.Name}}" // 字段名: {{.Comment}}
 {{end}})
 

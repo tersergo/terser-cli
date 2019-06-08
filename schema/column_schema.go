@@ -38,25 +38,19 @@ func (c *ColumnSchema) SetIsNullable(v interface{}) {
 }
 
 func (c *ColumnSchema) SetDataTypeLength(v interface{}) {
-	i, err := toInt(v)
-	if err == nil && i > 0 {
-		c.DataTypeLength = i
-	}
+	c.DataTypeLength = toInt(v, 0)
 }
 
 func (c *ColumnSchema) SetDataTypeScale(v interface{}) {
-	i, err := toInt(v)
-	if err == nil && i > 0 {
-		c.DataTypeScale = i
-	}
+	c.DataTypeScale = toInt(v, 0)
 }
 
 func (c *ColumnSchema) Init() {
-	if len(c.GoDataType) > 0 {
+	if c.GoDataType != "" {
 		return
 	}
 
-	if len(c.PropertyName) > 0 {
+	if c.PropertyName != "" {
 		_, exist := friendlyNameMaps[c.Name]
 		if !exist {
 			c.VarName = strings.ToLower(c.PropertyName[0:1]) + c.PropertyName[1:]
@@ -76,42 +70,42 @@ func (c *ColumnSchema) Init() {
 	switch strings.ToLower(c.DataType) {
 	case "tinyint", "smallint", "mediumint", "int", "bigint":
 		c.IsNumeral = true
-		if c.IsNullable {
-			c.GoDataType = "null.Int"
-		} else if strings.Index(c.ColumnType, "unsigned") > 0 {
+		if strings.Index(c.ColumnType, "unsigned") > 0 {
 			c.ColumnType = strings.Replace(c.ColumnType, " unsigned", "", 1)
 			if !IgnoreUnsignedType {
 				c.GoDataType = "u" + goBaseType
 			}
 		}
+		//if c.IsNullable {
+		//	c.GoDataType = "null.Int"
+		//}
 	case "date", "year", "time", "timestamp", "datetime":
 		c.IsDateTime = true
 		if strings.Index(c.DefaultValue, "CURRENT_TIMESTAMP") >= 0 {
 			c.DefaultValue = ""
 		}
-		if c.IsNullable {
-			c.GoDataType = "null.Time"
-		}
+		//if c.IsNullable {
+		//	c.GoDataType = "null.Time"
+		//}
 	case "float", "double", "decimal":
 		c.IsNumeral = true
-		if c.IsNullable {
-			c.GoDataType = "null.Float"
-		}
+		//if c.IsNullable {
+		//	c.GoDataType = "null.Float"
+		//}
 	case "bool":
 		c.IsNumeral = true
-		if c.IsNullable {
-			c.GoDataType = "null.Bool"
-		}
+		//if c.IsNullable {
+		//	c.GoDataType = "null.Bool"
+		//}
 	case "enum":
 		c.IsEnum = true
 		//c.initEnumType(c.ColumnType)
 	case "char", "varchar", "text", "json", "tinytext", "mediumtext", "longtext":
 		c.IsJson = strings.ToLower(c.DataType) == "json"
-		if c.IsNullable {
-			c.GoDataType = "null.String"
-		}
+		//if c.IsNullable {
+		//	c.GoDataType = "null.String"
+		//}
 	}
-
 }
 
 //func (c *ColumnSchema) initEnumType(enumType string) {

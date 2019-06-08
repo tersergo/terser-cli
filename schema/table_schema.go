@@ -15,9 +15,9 @@ type TableSchema struct {
 	EngineName     string         // table engine
 	FileName       string         // table file name
 	ColumnList     []ColumnSchema // table columns
-	PrimaryKeys    []ColumnSchema
-	HasPrimaryKey  bool // table primary key field
-	IsIncrement    bool // table is auto increment
+	PrimaryKeys    []ColumnSchema // primary columns list
+	HasPrimaryKey  bool           // table primary key field
+	IsIncrement    bool           // table is auto increment
 	HasNullable    bool
 	HasDateTime    bool
 	HasEnum        bool
@@ -30,12 +30,8 @@ type TableSchema struct {
 }
 
 func (t *TableSchema) SetIsIncrement(v interface{}) {
-	i, err := toInt(v)
-	if err == nil && i > 0 {
-		t.IsIncrement = true
-	} else {
-		t.IsIncrement = false
-	}
+	i := toInt(v, 0)
+	t.IsIncrement = i > 0
 }
 
 func (t *TableSchema) AppendColumn(column ColumnSchema) {

@@ -52,7 +52,6 @@ terser-cli -name=test -dsn="root:root@tcp(localhost:3306)/test?charset=utf8&pars
 
 ```sh
 go get -u github.com/jinzhu/gorm
-go get -u github.com/guregu/null
 ```
 
 
