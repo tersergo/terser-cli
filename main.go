@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"github.com/tersergo/terser-cli/schema"
-	tpl "github.com/tersergo/terser-cli/template"
+	tmpl "github.com/tersergo/terser-cli/template"
 )
 
 var (
@@ -51,17 +51,27 @@ terser-cli -name=test -dsn="root:root@tcp(localhost:3306)/test?charset=utf8&pars
 		fmt.Println("database error: ", err.Error())
 		return
 	}
-	dbConfigName := "db_config"
-	generateSingleFile(dbConfigName, "model", tpl.DBConfig, query)
+	//dbConfigName := "db_config"
+	//generateSingleFile(dbConfigName, "model", tmpl.DBConfig, query)
+
+	for fileName, configTmpl := range modelFile {
+		fmt.Println(configTmpl)
+		generateSingleFile(fileName, "model", configTmpl, query)
+	}
 
 	moduleName := "model"
-	tpl, err := getTemplate(moduleName, tpl.Model)
+	tpl, err := getTemplate(moduleName, tmpl.Model)
 	if err != nil {
 		fmt.Println("template parse error: ", moduleName, err.Error())
 		return
 	}
 	generateTemplateFile(tpl, moduleName, tableList)
 
+}
+
+var modelFile = map[string]string{
+	"db_config": tmpl.DBConfig,
+	"db_where":  tmpl.DBWhere,
 }
 
 func generateTemplateFile(modTpl *template.Template, moduleName string, tableList map[string]*schema.TableSchema) {

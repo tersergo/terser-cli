@@ -17,7 +17,7 @@ type {{.StructName}} struct {
 //  {{.StructName}} 表字段名常量
 const (
 	{{.StructName}}_TableName  = "{{.Name}}" // 表名: {{.Comment}}
-{{range  .ColumnList}}	{{$.StructName}}_{{.PropertyName}} = "{{.Name}}" // 字段名: {{.Comment}}
+{{range  .ColumnList}}	{{$.StructName}}_{{.PropertyName}} TableField = "{{.Name}}" // 字段名: {{.Comment}}
 {{end}})
 
 // {{.StructName}} 数据库{{.Name}}查询对象
@@ -68,7 +68,7 @@ func ({{ .VarName }} *{{ .StructName }}) Delete() error {
 {{if .HasPrimaryKey}}
 func ({{.VarName}} *{{.StructName}}) Load() error {
 	return New{{.StructName}}Query().
-		Where(&{{.VarName}}).First(&{{.VarName}}).Error
+		Query(&{{.VarName}}).First(&{{.VarName}}).Error
 }
 
 func Find{{.StructName}}ByID({{range .PrimaryKeys}}{{if gt .Index 0}}, {{end}}{{.VarName}} {{.GoDataType}}{{end}}) ({{.VarName}} *{{.StructName}}, err error) {
@@ -86,16 +86,16 @@ func Delete{{.StructName}}ByID({{range .PrimaryKeys}}{{if gt .Index 0}}, {{end}}
 	}
 
 	return New{{.StructName}}Query().
-		Where("{{range .PrimaryKeys}}{{if gt .Index 0}} and {{end}}{{.Name}} = ?{{end}} "{{range .PrimaryKeys}}, {{.VarName}}{{end}}).
+		Query("{{range .PrimaryKeys}}{{if gt .Index 0}} and {{end}}{{.Name}} = ?{{end}} "{{range .PrimaryKeys}}, {{.VarName}}{{end}}).
 		Updates(update).Error
 {{else}}	return New{{.StructName}}Query().
-		Where("{{range .PrimaryKeys}}{{if gt .Index 0}} and {{end}}{{.Name}} = ?{{end}} "{{range .PrimaryKeys}}, {{.VarName}}{{end}}).
+		Query("{{range .PrimaryKeys}}{{if gt .Index 0}} and {{end}}{{.Name}} = ?{{end}} "{{range .PrimaryKeys}}, {{.VarName}}{{end}}).
 		Delete({{.StructName}}{}).Error
 {{end}}}
 
 func Update{{.StructName}}ByID({{range .PrimaryKeys}}{{if gt .Index 0}}, {{end}}{{.VarName}} {{.GoDataType}}{{end}}, updates interface{}) (err error) {
 	return New{{.StructName}}Query().
-		Where("{{range .PrimaryKeys}}{{if gt .Index 0}} and {{end}}{{.Name}} = ?{{end}} "{{range .PrimaryKeys}}, {{.VarName}}{{end}}).
+		Query("{{range .PrimaryKeys}}{{if gt .Index 0}} and {{end}}{{.Name}} = ?{{end}} "{{range .PrimaryKeys}}, {{.VarName}}{{end}}).
 		Updates(updates).Error
 }
 {{end}}
