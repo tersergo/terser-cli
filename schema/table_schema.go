@@ -62,6 +62,7 @@ func (t *TableSchema) AppendColumn(column ColumnSchema) {
 	case "updated_on":
 		t.UpdateUserKey = column.PropertyName
 	}
+	column.Index = len(t.ColumnList)
 
 	t.ColumnList = append(t.ColumnList, column)
 }
