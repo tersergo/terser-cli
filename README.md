@@ -10,6 +10,9 @@ graph LR;
     model --> struct(table struct)
     model --> const(field const)
     model --> gorm(gorm CRUD)
+    terser --> |generate| proto[protobuf]
+    proto --> pbfile(proto define)
+    proto --> pbt(model transfer)
 ```
 
 
