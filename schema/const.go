@@ -16,11 +16,11 @@ var (
 
 	splitChars = [...]string{"_", "-"}
 
-	tablePrefixes = [...]string{"t_"}
+	tablePrefixes = [...]string{"t_", "a_"}
 
 	friendlyNameMaps = map[string]string{
 		"db":   "DB",
-		"id":   "ID",
+		"id":   "Id",
 		"pk":   "PK",
 		"uuid": "UUID",
 		"ip":   "IP",

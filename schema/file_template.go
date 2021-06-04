@@ -1,6 +1,6 @@
 package schema
 
-type FileTempalte struct {
+type FileTemplate struct {
 	FileName    string
 	DirName     string
 	FileContent string

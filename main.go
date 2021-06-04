@@ -85,7 +85,7 @@ terser-cli -name=test -dsn="root:root@tcp(localhost:3306)/test?charset=utf8&pars
 
 }
 
-var modelFile = []schema.FileTempalte{
+var modelFile = []schema.FileTemplate{
 	{FileName: "db_config.go", DirName: "model", FileContent: model.DBConfig},
 	{FileName: "db_where.go", DirName: "model", FileContent: model.DBWhere},
 	{FileName: "query_list.proto", DirName: "proto", FileContent: proto.QueryList},

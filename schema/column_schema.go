@@ -81,7 +81,7 @@ func (c *ColumnSchema) Init() {
 		//}
 	case "date", "year", "time", "timestamp", "datetime":
 		c.IsDateTime = true
-		if strings.Index(c.DefaultValue, "CURRENT_TIMESTAMP") >= 0 {
+		if strings.ContainsAny(strings.ToLower(c.DefaultValue), "current_timestamp") {
 			c.DefaultValue = ""
 		}
 		//if c.IsNullable {
@@ -102,6 +102,9 @@ func (c *ColumnSchema) Init() {
 		//c.initEnumType(c.ColumnType)
 	case "char", "varchar", "text", "json", "tinytext", "mediumtext", "longtext":
 		c.IsJson = strings.ToLower(c.DataType) == "json"
+		if c.DefaultValue == "''"{
+			c.DefaultValue = ""
+		}
 		//if c.IsNullable {
 		//	c.GoDataType = "null.String"
 		//}

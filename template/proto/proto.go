@@ -8,32 +8,54 @@ import "query_list.proto";
 
 // {{.StructName}}Service  {{.Comment}}
 service {{.StructName}}Service {
-    // 新增接口
+      /**  name: 新增接口
+      remark: 新增接口
+      method: POST
+      url: Create{{.StructName}} */
     rpc Create{{.StructName}} ({{.StructName}}Data) returns ({{.StructName}}IDData);
-    // 修改接口
-    rpc Modify{{.StructName}} ({{.StructName}}Data) returns ({{.StructName}}IDData);
-    // 查询接口
+    /**  name: 修改接口
+      remark: 修改接口
+      method: POST
+      url: Update{{.StructName}}List} */
+    rpc Update{{.StructName}} ({{.StructName}}Data) returns ({{.StructName}}IDData);
+    /**  name: 查询接口
+      remark: 查询接口
+      method: GET
+      url: Describe{{.StructName}} */
     rpc Describe{{.StructName}} ({{.StructName}}IDData) returns ({{.StructName}}Data);
-    // 删除接口
+    /**  name: 删除接口
+      remark: 删除接口
+      method: POST
+      url: Find{{.StructName}}List} */ 
     rpc Delete{{.StructName}} ({{.StructName}}IDData) returns ({{.StructName}}IDData);
-    // 查询列表接口
+    /**  name: 查询列表接口
+      remark: 查询列表接口
+      method: GET
+      url: Find{{.StructName}}List} */ 
     rpc Find{{.StructName}}List (QueryParams) returns ({{.StructName}}List);
 }
 
-// {{.StructName}} PK Query
+/** name: {{.StructName}}IDData
+    remark: {{.StructName}}Id查询 */
 message {{.StructName}}IDData { 
-{{range .PrimaryKeys}}   {{.GoDataType}} {{.PropertyName}} = {{call Sum .Index 1}};	// {{.Comment}}
+{{range .PrimaryKeys}}   /** remark: {{.Comment}} */
+   {{.GoDataType}} {{.PropertyName}} = {{call Sum .Index 1}};
 {{end}}}
 
-// {{.StructName}}Model {{.Comment}}
+/** name: {{.StructName}}Data
+    remark: {{.StructName}}Model {{.Comment}} */
 message {{.StructName}}Data { 
-{{range .ColumnList}}    {{.GoDataType}} {{.PropertyName}}  = {{call Sum .Index 1}};	// {{.Comment}}
+{{range .ColumnList}}    /** remark: {{.Comment}} */
+    {{.GoDataType}} {{.PropertyName}}  = {{call Sum .Index 1}};
 {{end}}}
 
-// {{.StructName}}查询列表: {{.Comment}} 
+/** name: {{.StructName}}List
+    remark: {{.StructName}}查询列表 {{.Comment}} */
 message {{.StructName}}List {
-    PageInfo PageInfo = 1;				// 分页信息
-    repeated {{.StructName}}Data DataList = 2;	// {{.StructName}}Data列表
+    /** remark: 分页信息 */
+    PageInfo PageInfo = 1;
+    /** remark: {{.StructName}}Data列表 */
+    repeated {{.StructName}}Data DataList = 2;
 }
 
 // model.{{.StructName}} 转 proto.{{.StructName}}Data
