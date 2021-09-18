@@ -1,1 +1,5 @@
 .idea/*
+go.sum
+terser-cli.exe
+terser-cli
+vendor/*
