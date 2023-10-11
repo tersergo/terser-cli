@@ -30,7 +30,7 @@ graph LR;
 
 1. 安装go源码
 	
-> go get -u github.com/tersergo/terser-cli
+> go install github.com/tersergo/terser-cli
 
 2. 执行生成命令
 
@@ -54,7 +54,7 @@ terser-cli -name=test -dsn="root:root@tcp(localhost:3306)/test?charset=utf8&pars
 - 安装依赖库
 
 ```sh
-go get -u github.com/jinzhu/gorm
+go install github.com/jinzhu/gorm
 ```
 
 
