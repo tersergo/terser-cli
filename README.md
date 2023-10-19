@@ -1,7 +1,5 @@
 # 一个Golang代码生成工具(terser-cli)
 
-----------
-![功能图](./docs/func.png)
 
 ```mermaid
 graph LR;
